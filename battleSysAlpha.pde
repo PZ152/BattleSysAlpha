@@ -24,7 +24,6 @@ class Attack extends Ability {
         if (target.blocking) {
             damage -= target.blockPower;
             damage = max(damage, 0);
-            target.blocking = false;
             log(user.name + " attacks, but " + target.name + " blocks " + target.blockPower + " damage.", color(0, 0, 255));
             if (damage == 0) {
                 log(user.name + "'s attack is fully blocked!", color(255, 255, 0));
@@ -172,18 +171,20 @@ void progressTurn() {
     playerChoice = int(random(player.abilities.size()));
     enemyChoice = int(random(enemy.abilities.size()));
 
-    player.useAbility(playerChoice, enemy);
-    enemy.useAbility(enemyChoice, player);
-
-    if (player.blocking && enemyChoice == 0) { // enemy used attack
+    // Resolve abilities for both player and enemy
+    if (player.abilities.get(playerChoice) instanceof Attack && enemy.blocking) {
         player.blocking = false;
-        log("Player blocks the attack and reflects " + player.blockPower + " damage.", color(255, 255, 0));
-        enemy.health -= player.blockPower;
+        log("Enemy blocks the attack.", color(0, 0, 255));
+    } else {
+        player.useAbility(playerChoice, enemy);
     }
 
-    if (enemy.blocking && playerChoice == 0) { // player used attack
+    if (enemy.abilities.get(enemyChoice) instanceof Attack && player.blocking) {
         enemy.blocking = false;
-        log("Enemy blocks the attack.", color(0, 0, 255));
+        log("Player blocks the attack and reflects " + player.blockPower + " damage.", color(255, 255, 0));
+        enemy.health -= player.blockPower;
+    } else {
+        enemy.useAbility(enemyChoice, player);
     }
 
     log(playerName + " HP: " + player.health + " | Enemy HP: " + enemy.health, color(255, 255, 255));
