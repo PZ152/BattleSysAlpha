@@ -172,6 +172,8 @@ void keyPressed() {
     } else if (key == ' ') {
         if (gameEnded) {
             resetGame();
+        } else if (rewardChosen && !gameEnded && enemy == null) {
+            startBattle();
         } else if (player.isAlive() && enemy.isAlive()) {
             progressTurn();
         }
@@ -180,17 +182,21 @@ void keyPressed() {
 
 
 
+
+
 void startBattle() {
-    player = new Character(playerName, 3);
-    enemy = new Character("Enemy", 3);
+    enemy = new Character("Enemy", 3); // Initialize enemy
 
     Ability basicAttack = new Attack("Basic Attack", 1, 100);
     Ability block = new Block("Block", 1, 100);
     Ability heal = new Heal("Heal", 2, 100);
 
-    player.addAbility(basicAttack);
-    player.addAbility(block);
-    player.addAbility(heal);
+    // Ensure player only adds these abilities once
+    if (player.abilities.size() == 0) {
+        player.addAbility(basicAttack);
+        player.addAbility(block);
+        player.addAbility(heal);
+    }
 
     enemy.addAbility(basicAttack);
     enemy.addAbility(block);
@@ -198,6 +204,7 @@ void startBattle() {
     log("Welcome, " + playerName + "! Get ready for battle.", color(255, 255, 255));
     log("Press SPACE to progress through turns.", color(255, 255, 255));
 }
+
 
 void progressTurn() {
     playerChoice = weightedRandomChoice(player.abilities);
@@ -317,8 +324,11 @@ void resetGame() {
     logColors.clear();
     playerName = "";
     nameEntered = false;
+    rewardChosen = false;
+    weightAdjustment = false;
     gameEnded = false;
-    playerChoice = 0;
-    enemyChoice = 0;
+    weightChange = 0;
+    player = null;
+    enemy = null;
     setup();
 }
