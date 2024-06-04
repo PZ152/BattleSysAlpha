@@ -153,6 +153,11 @@ void keyPressed() {
             playerName += key;
         } else if (key == '\n' || key == '\r') {
             nameEntered = true;
+            player = new Character(playerName, 3); // Initialize player here
+            // Add initial abilities
+            player.addAbility(new Attack("Basic Attack", 1, 100));
+            player.addAbility(new Block("Block", 1, 100));
+            player.addAbility(new Heal("Heal", 2, 100));
             showRewardScreen();
         }
     } else if (!rewardChosen) {
@@ -171,6 +176,8 @@ void keyPressed() {
         }
     }
 }
+
+
 void startBattle() {
     player = new Character(playerName, 3);
     enemy = new Character("Enemy", 3);
@@ -241,24 +248,28 @@ void showRewardScreen() {
     log("3: New Ability - Life Sacrifice (Lose 1 health to deal 2 damage)", color(255, 255, 255));
 }
 
+
 void applyReward(int choice) {
-    switch (choice) {
-        case 1:
-            weightAdjustment = true;
-            showWeightAdjustmentScreen(20);
-            break;
-        case 2:
-            weightAdjustment = true;
-            showWeightAdjustmentScreen(-20);
-            break;
-        case 3:
-            player.addAbility(new LifeSacrifice("Life Sacrifice", 2, 100));
-            log("You chose Life Sacrifice!", color(0, 255, 0));
-            rewardChosen = true;
-            showLoadoutScreen();
-            break;
+    if (!rewardChosen) {
+        switch (choice) {
+            case 1:
+                weightAdjustment = true;
+                showWeightAdjustmentScreen(20);
+                break;
+            case 2:
+                weightAdjustment = true;
+                showWeightAdjustmentScreen(-20);
+                break;
+            case 3:
+                player.addAbility(new LifeSacrifice("Life Sacrifice", 2, 100));
+                log("You chose Life Sacrifice!", color(0, 255, 0));
+                rewardChosen = true;
+                showLoadoutScreen();
+                break;
+        }
     }
 }
+
 void showLoadoutScreen() {
     log("Customize your loadout:", color(255, 255, 255));
     for (int i = 0; i < player.abilities.size(); i++) {
@@ -275,15 +286,19 @@ void showWeightAdjustmentScreen(int weightChange) {
     }
 }
 
+
 void adjustWeight(int abilityIndex, int weightChange) {
     if (abilityIndex >= 0 && abilityIndex < player.abilities.size()) {
         player.abilities.get(abilityIndex).weight += weightChange;
         log("Adjusted weight of " + player.abilities.get(abilityIndex).name + " by " + weightChange + ".", color(0, 255, 0));
+    } else {
+        log("Invalid ability selection.", color(255, 0, 0));
     }
     rewardChosen = true;
     weightAdjustment = false;
     showLoadoutScreen();
 }
+
 
 void endBattle() {
     if (player.isAlive()) {
