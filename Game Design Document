@@ -136,12 +136,6 @@ Battle Phase
 - Execute abilities and apply effects.
 - Check for victory or defeat.
 
-Customization Phase
--------------------
-- Display loadout and ability bank.
-- Allow player to modify abilities and adjust weights.
-- Keyboard input for navigation and selection.
-
 Reward Phase
 ------------
 - Grant a predetermined reward.
@@ -149,6 +143,14 @@ Reward Phase
 - Add the selected reward to the player's inventory.
 - If the reward involves stat modification, display applicable abilities for 
   selection before entering the customization phase.
+
+Customization Phase
+-------------------
+- Display loadout and ability bank.
+- Allow player to modify abilities and adjust weights.
+- Keyboard input for navigation and selection.
+
+
 
 Post-Battle
 -----------
