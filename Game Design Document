@@ -146,9 +146,10 @@ Reward Phase
 
 Customization Phase
 -------------------
-- Display loadout and ability bank.
-- Allow player to modify abilities and adjust weights.
-- Keyboard input for navigation and selection.
+- Display loadout and ability bank in columns.
+- Weights should be displayed next to the name of the ability, but aligned right within the column.
+- Allow player to modify loadout by clicking and dragging abilities or keyboard input.
+- A section of the screen should update with a description of highlighted ability.
 
 
 
