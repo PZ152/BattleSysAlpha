@@ -1,4 +1,5 @@
 // BattleSysAlpha Prototype with Modular Ability System, Health Display, and Color-Coded Information
+int weightChange = 0;
 
 import java.util.*;
 
@@ -160,13 +161,13 @@ void keyPressed() {
             player.addAbility(new Heal("Heal", 2, 100));
             showRewardScreen();
         }
-    } else if (!rewardChosen) {
+    } else if (!rewardChosen && !weightAdjustment) {
         if (key >= '1' && key <= '3') {
             applyReward(key - '0');
         }
     } else if (weightAdjustment) {
         if (key >= '1' && key <= '9') {
-            adjustWeight(key - '1', weightAdjustment ? 20 : -20);
+            adjustWeight(key - '1');
         }
     } else if (key == ' ') {
         if (gameEnded) {
@@ -176,6 +177,7 @@ void keyPressed() {
         }
     }
 }
+
 
 
 void startBattle() {
@@ -253,12 +255,14 @@ void applyReward(int choice) {
     if (!rewardChosen) {
         switch (choice) {
             case 1:
+                weightChange = 20;
                 weightAdjustment = true;
-                showWeightAdjustmentScreen(20);
+                showWeightAdjustmentScreen(weightChange);
                 break;
             case 2:
+                weightChange = -20;
                 weightAdjustment = true;
-                showWeightAdjustmentScreen(-20);
+                showWeightAdjustmentScreen(weightChange);
                 break;
             case 3:
                 player.addAbility(new LifeSacrifice("Life Sacrifice", 2, 100));
@@ -270,6 +274,7 @@ void applyReward(int choice) {
     }
 }
 
+
 void showLoadoutScreen() {
     log("Customize your loadout:", color(255, 255, 255));
     for (int i = 0; i < player.abilities.size(); i++) {
@@ -278,7 +283,6 @@ void showLoadoutScreen() {
     log("Press SPACE to start the battle.", color(255, 255, 255));
 }
 
-
 void showWeightAdjustmentScreen(int weightChange) {
     log("Select an ability to adjust weight by " + weightChange + ":", color(255, 255, 255));
     for (int i = 0; i < player.abilities.size(); i++) {
@@ -286,8 +290,7 @@ void showWeightAdjustmentScreen(int weightChange) {
     }
 }
 
-
-void adjustWeight(int abilityIndex, int weightChange) {
+void adjustWeight(int abilityIndex) {
     if (abilityIndex >= 0 && abilityIndex < player.abilities.size()) {
         player.abilities.get(abilityIndex).weight += weightChange;
         log("Adjusted weight of " + player.abilities.get(abilityIndex).name + " by " + weightChange + ".", color(0, 255, 0));
