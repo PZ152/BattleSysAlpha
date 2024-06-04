@@ -1,0 +1,16 @@
+# Coding Standards for Processing 4.0
+
+## General Guidelines
+- Use consistent indentation (e.g., 2 spaces per level).
+- Write clear and concise comments for each function and complex block of code.
+- Use meaningful variable and function names.
+
+## Code Structure
+- Keep functions short and focused on a single task.
+- Group related functions together.
+- Use `setup()` and `draw()` functions effectively.
+
+## Best Practices
+- Avoid using magic numbers; use constants or variables with descriptive names.
+- Optimize loops to reduce unnecessary computations.
+- Handle all potential error cases, especially in input/output operations.
