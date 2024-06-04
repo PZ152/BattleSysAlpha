@@ -27,16 +27,25 @@ class Attack extends Ability {
         if (target.blocking) {
             damage -= target.blockPower;
             damage = max(damage, 0);
-            log(user.name + " attacks, but " + target.name + " blocks " + target.blockPower + " damage.", color(0, 0, 255));
+            log(user.name + " uses " + this.name + " on " + target.name + " for " + this.power + " damage.", color(255, 0, 0));
+            log(target.name + " blocks " + target.blockPower + " damage.", color(0, 0, 255));
             if (damage == 0) {
+                log(user.name + " uses " + this.name + " on " + target.name + " for " + this.power + " damage.", color(255, 0, 0));
                 log(user.name + "'s attack is fully blocked!", color(255, 255, 0));
+            } else {
+                target.health -= damage;
+                log(target.name + " takes " + damage + " damage.", color(255, 0, 0));
             }
+            target.blocking = false;
+        } else {
+            target.health -= this.power;
+            log(user.name + " uses " + this.name + " on " + target.name + " for " + this.power + " damage.", color(255, 0, 0));
+            log(target.name + " takes " + this.power + " damage.", color(255, 0, 0));
         }
-        target.health -= damage;
-        log(user.name + " uses " + this.name + " on " + target.name + " for " + damage + " damage.", color(255, 0, 0));
-        target.blocking = false;
     }
 }
+
+
 
 
 class Heal extends Ability {
@@ -61,9 +70,10 @@ class Block extends Ability {
     void use(Character user, Character target) {
         user.blocking = true;
         user.blockPower = this.blockPower;
-        log(user.name + " uses " + this.name + " to block.", color(0, 0, 255));
+        log(user.name + " uses " + this.name + " to block with " + this.blockPower + " strength.", color(0, 0, 255));
     }
 }
+
 
 class LifeSacrifice extends Ability {
     LifeSacrifice(String name, int power, int weight) {
