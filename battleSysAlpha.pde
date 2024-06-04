@@ -5,18 +5,20 @@ import java.util.*;
 abstract class Ability {
     String name;
     int power;
+    int weight;
 
-    Ability(String name, int power) {
+    Ability(String name, int power, int weight) {
         this.name = name;
         this.power = power;
+        this.weight = weight;
     }
 
     abstract void use(Character user, Character target);
 }
 
 class Attack extends Ability {
-    Attack(String name, int power) {
-        super(name, power);
+    Attack(String name, int power, int weight) {
+        super(name, power, weight);
     }
 
     void use(Character user, Character target) {
@@ -31,12 +33,14 @@ class Attack extends Ability {
         }
         target.health -= damage;
         log(user.name + " uses " + this.name + " on " + target.name + " for " + damage + " damage.", color(255, 0, 0));
+        target.blocking = false;
     }
 }
 
+
 class Heal extends Ability {
-    Heal(String name, int power) {
-        super(name, power);
+    Heal(String name, int power, int weight) {
+        super(name, power, weight);
     }
 
     void use(Character user, Character target) {
@@ -48,8 +52,8 @@ class Heal extends Ability {
 class Block extends Ability {
     int blockPower;
 
-    Block(String name, int blockPower) {
-        super(name, 0);
+    Block(String name, int blockPower, int weight) {
+        super(name, 0, weight);
         this.blockPower = blockPower;
     }
 
@@ -57,6 +61,18 @@ class Block extends Ability {
         user.blocking = true;
         user.blockPower = this.blockPower;
         log(user.name + " uses " + this.name + " to block.", color(0, 0, 255));
+    }
+}
+
+class LifeSacrifice extends Ability {
+    LifeSacrifice(String name, int power, int weight) {
+        super(name, power, weight);
+    }
+
+    void use(Character user, Character target) {
+        user.health -= 1;
+        target.health -= this.power;
+        log(user.name + " uses " + this.name + ", loses 1 health and deals " + this.power + " damage to " + target.name, color(255, 0, 0));
     }
 }
 
@@ -137,7 +153,15 @@ void keyPressed() {
             playerName += key;
         } else if (key == '\n' || key == '\r') {
             nameEntered = true;
-            startBattle();
+            showRewardScreen();
+        }
+    } else if (!rewardChosen) {
+        if (key >= '1' && key <= '3') {
+            applyReward(key - '0');
+        }
+    } else if (weightAdjustment) {
+        if (key >= '1' && key <= '9') {
+            adjustWeight(key - '1', weightAdjustment ? 20 : -20);
         }
     } else if (key == ' ') {
         if (gameEnded) {
@@ -147,14 +171,13 @@ void keyPressed() {
         }
     }
 }
-
 void startBattle() {
     player = new Character(playerName, 3);
     enemy = new Character("Enemy", 3);
 
-    Ability basicAttack = new Attack("Basic Attack", 1);
-    Ability block = new Block("Block", 1);
-    Ability heal = new Heal("Heal", 2);
+    Ability basicAttack = new Attack("Basic Attack", 1, 100);
+    Ability block = new Block("Block", 1, 100);
+    Ability heal = new Heal("Heal", 2, 100);
 
     player.addAbility(basicAttack);
     player.addAbility(block);
@@ -168,41 +191,99 @@ void startBattle() {
 }
 
 void progressTurn() {
-    playerChoice = int(random(player.abilities.size()));
-    enemyChoice = int(random(enemy.abilities.size()));
+    playerChoice = weightedRandomChoice(player.abilities);
+    enemyChoice = weightedRandomChoice(enemy.abilities);
 
-    // Resolve player's ability
+    // Resolve abilities for both player and enemy
     if (player.abilities.get(playerChoice) instanceof Attack && enemy.blocking) {
+        player.blocking = false;
         log("Enemy blocks the attack.", color(0, 0, 255));
     } else {
         player.useAbility(playerChoice, enemy);
     }
 
-    // Resolve enemy's ability
-    if (enemy.abilities.get(enemyChoice) instanceof Attack) {
-        if (player.blocking) {
-            log("Player blocks the attack and reflects " + player.blockPower + " damage.", color(255, 255, 0));
-            enemy.health -= player.blockPower;
-        } else {
-            enemy.useAbility(enemyChoice, player);
-        }
+    if (enemy.abilities.get(enemyChoice) instanceof Attack && player.blocking) {
+        enemy.blocking = false;
+        log("Player blocks the attack and reflects " + player.blockPower + " damage.", color(255, 255, 0));
+        enemy.health -= player.blockPower;
     } else {
         enemy.useAbility(enemyChoice, player);
     }
 
-    // Log current health status
     log(playerName + " HP: " + player.health + " | Enemy HP: " + enemy.health, color(255, 255, 255));
-
-    // Reset blocking status
-    player.blocking = false;
-    enemy.blocking = false;
-
-    // Check if battle should end
     if (!player.isAlive() || !enemy.isAlive()) {
         endBattle();
     }
 }
 
+int weightedRandomChoice(List<Ability> abilities) {
+    int totalWeight = 0;
+    for (Ability ability : abilities) {
+        totalWeight += ability.weight;
+    }
+    int randomValue = int(random(totalWeight));
+    for (int i = 0; i < abilities.size(); i++) {
+        randomValue -= abilities.get(i).weight;
+        if (randomValue < 0) {
+            return i;
+        }
+    }
+    return abilities.size() - 1;
+}
+
+boolean rewardChosen = false;
+boolean weightAdjustment = false;
+
+void showRewardScreen() {
+    log("Choose your reward:", color(255, 255, 255));
+    log("1: +20 Weight", color(255, 255, 255));
+    log("2: -20 Weight", color(255, 255, 255));
+    log("3: New Ability - Life Sacrifice (Lose 1 health to deal 2 damage)", color(255, 255, 255));
+}
+
+void applyReward(int choice) {
+    switch (choice) {
+        case 1:
+            weightAdjustment = true;
+            showWeightAdjustmentScreen(20);
+            break;
+        case 2:
+            weightAdjustment = true;
+            showWeightAdjustmentScreen(-20);
+            break;
+        case 3:
+            player.addAbility(new LifeSacrifice("Life Sacrifice", 2, 100));
+            log("You chose Life Sacrifice!", color(0, 255, 0));
+            rewardChosen = true;
+            showLoadoutScreen();
+            break;
+    }
+}
+void showLoadoutScreen() {
+    log("Customize your loadout:", color(255, 255, 255));
+    for (int i = 0; i < player.abilities.size(); i++) {
+        log((i + 1) + ": " + player.abilities.get(i).name + " (Weight: " + player.abilities.get(i).weight + ")", color(255, 255, 255));
+    }
+    log("Press SPACE to start the battle.", color(255, 255, 255));
+}
+
+
+void showWeightAdjustmentScreen(int weightChange) {
+    log("Select an ability to adjust weight by " + weightChange + ":", color(255, 255, 255));
+    for (int i = 0; i < player.abilities.size(); i++) {
+        log((i + 1) + ": " + player.abilities.get(i).name + " (Current Weight: " + player.abilities.get(i).weight + ")", color(255, 255, 255));
+    }
+}
+
+void adjustWeight(int abilityIndex, int weightChange) {
+    if (abilityIndex >= 0 && abilityIndex < player.abilities.size()) {
+        player.abilities.get(abilityIndex).weight += weightChange;
+        log("Adjusted weight of " + player.abilities.get(abilityIndex).name + " by " + weightChange + ".", color(0, 255, 0));
+    }
+    rewardChosen = true;
+    weightAdjustment = false;
+    showLoadoutScreen();
+}
 
 void endBattle() {
     if (player.isAlive()) {
