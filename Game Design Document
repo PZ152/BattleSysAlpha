@@ -27,13 +27,14 @@ GAME MECHANICS
 
 Battle System
 -------------
-- Turn-Based: Players and enemies take turns selecting and executing abilities.
-- Automated Actions: Actions are based on a predefined ability pool.
-- Player Input: Key press to progress through each turn.
-- Minions: Skills can summon minions to aid players or enemies. Minions have
-  their own stats and abilities and act in turn-based manner.
-- Multi-Target Skills: Skills that can target multiple entities, such as all
-  enemies or all allies.
+- Turn-Based: Players and enemies determine actions based on weighted pools.
+- All actions are calculated simultaneously each turn.
+- Invalid actions due to combat results are rerolled automatically.
+- Minions: Summoned based on specific abilities, acting in turn-based manner.
+- Multi-Target Skills: Skills can target multiple entities, such as all enemies
+  or all allies.
+- Special Actions: Some enemies may only act every other turn, and certain
+  abilities allow additional actions per turn.
 
 Abilities
 ---------
@@ -45,8 +46,9 @@ Abilities
   - Status Effects: Conditions like Poison, Burn, etc.
   - Minion Summoning: Skills that add minions to the player or enemy side.
   - Multi-Target: Skills that affect multiple targets.
-- Customizable: Players can adjust the weights and power of abilities, and add
-  new ones.
+- Customizable: Adjust weights and power of abilities; add new ones.
+- Cooldowns: Some abilities have cooldowns or limited uses per battle.
+- Unlocking: Abilities are unlocked through rewards after battles.
 
 Progression
 -----------
@@ -88,6 +90,10 @@ KEY FEATURES
 - Multi-Target Skills: Skills affecting multiple entities.
 - User Interaction: Simplified command-based interaction with highlighted
   selections for clarity.
+- Rewards: Players receive a predetermined reward and choose one of three semi-
+  random rewards after each victorious battle.
+- Turn Limits: Battles have a high turn limit, after which "ad infinitum" ends
+  the battle to prevent infinite loops.
 
 ===============================================================================
 
@@ -120,7 +126,8 @@ GAME FLOW
 Setup Phase
 -----------
 - Initialize game window and setup.
-- Display initial instructions.
+- Display initial instructions and prompt for player name.
+- Enter initial reward and customization phase before the first battle.
 
 Battle Phase
 ------------
@@ -135,15 +142,17 @@ Customization Phase
 - Allow player to modify abilities and adjust weights.
 - Keyboard input for navigation and selection.
 
-Post-Battle
------------
-- Fully heal player if victorious.
-- Return to customization phase if defeated.
-
 Reward Phase
 ------------
 - Grant a predetermined reward.
 - Present three semi-random rewards for the player to choose from.
 - Add the selected reward to the player's inventory.
+- If the reward involves stat modification, display applicable abilities for 
+  selection before entering the customization phase.
+
+Post-Battle
+-----------
+- Fully heal player if victorious.
+- Return to customization phase if defeated.
 
 ===============================================================================
