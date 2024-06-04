@@ -56,6 +56,25 @@ Spawn Wisp (Spirit): Summons a magical minion to fight alongside you.
 Arcane Bolt: Deals 2-4 magical dmg. (Up: More dmg)
 Empower Aura (Buff): Grants a small attack power bonus ( + 1 Atk) to nearby allies (within 2 spaces). (Up: Stronger buff & wider range)
 
+Arcane Disruption (2 turn cooldown): Reduces the enemy's chance to use magical abilities for 1 turn (70% chance). (Up: Lower chance & longer duration)
+Power Dampener (2 turn cooldown): Reduces the enemy's chance to use physical abilities for 1 turn (70% chance). (Up: Lower chance & longer duration)
+Anti-Heal (Debuff): Prevents the target from receiving healing effects for 2 turns (50% chance to apply). (Up: Higher chance & longer duration)
+
+Arcane Suppression (2 turn cooldown): Reduces the enemy's chance to use magical abilities for 1 turn (70% chance). (Up: Lower chance & longer duration)
+Physical Disruption (2 turn cooldown): Reduces the enemy's chance to use physical abilities for 1 turn (70% chance). (Up: Lower chance & longer duration)
+Anti-Heal (Debuff): Prevents the target from receiving healing effects for 2 turns (50% chance to apply). (Up: Higher chance & longer duration)
+
+Barrier: Grants temporary damage reduction (reduces incoming damage by 2 pts) for 2 turns. (Up: More reduction & duration)
+Invulnerability: Makes the target character immune to all damage for 1 turn (20% chance to apply). (Up: Higher chance & longer duration)
+Haste+ (Buff): Significantly increases attack speed (by 50%) for 1 turn. (Up: Longer duration)
+Disorientation (Debuff): Causes the enemy to target random enemies (including themself) for 1 turn (20% chance to apply). (Up: Higher chance & longer duration)
+DoT (Damage over Time): Deals 1 damage per turn for 3 turns (100% chance to apply on successful hit). (Up: More damage per turn & longer duration)
+Taunt (Debuff): Forces the enemy to target the caster for 1 turn (70% chance to apply). (Up: Higher chance & longer duration)
+
+Fortify: Grants temporary damage reduction (reduces incoming damage by 2 pts) for 2 turns. (Up: More reduction & duration)
+Invulnerability: Makes the target character immune to all damage for 1 turn (20% chance to apply). (Up: Higher chance & longer duration)
+Haste+ (Buff): Significantly increases attack speed (by 50%) for 1 turn. (Up: Longer duration)
+
 Passive Abilities (Unlocked throughout the game):
 Strong Constitution: Increases the player's maximum health points (by 5 points). (Up: More HP)
 Agile: Grants a chance (10%) to dodge incoming attacks. (Up: Higher chance)
@@ -66,6 +85,11 @@ Opportunist: Grants a bonus chance (10%) to deal critical hits (double damage) w
 Elemental Affinity (Fire/Ice/Elec): Reduces incoming damage of a specific element (fire/ice/elec) by 1 pt. (Up: More resistance)
 Thick Skin: Reduces all incoming physical damage by a small percentage (5%). (Up: More reduc%)
 Magic Barrier: Reduces all incoming magical damage by a small percentage (5%). (Up: More reduc%)
+Elemental Mastery (Fire/Ice/Elec): Grants a bonus to damage dealt with a specific element (fire/ice/elec) ( + 10% dmg). (Up: Higher damage bonus)
+Dual Wield: Grants a chance (20%) to deliver an additional weak attack with your off-hand weapon when attacking. (Up: Higher chance)
+Cleave Mastery: Increases the damage dealt by Cleave ability ( + 1 dmg per target). (Up: More damage per target)
+Area of Effect Mastery: Increases the damage dealt by area of effect abilities (Fire Nova, Ice Blast) by a small percentage (5%). (Up: More AoE damage)
+
 
 Notes:
 
