@@ -159,4 +159,112 @@ class Enemy {
         abilities = new ArrayList<Ability>();
         // Initialize abilities
         abilities.add(new Attack("Claw", 10));
-        abilities.add(new Attack
+        abilities.add(new Attack("Bite", 15));
+        // Add more abilities as needed
+    }
+
+    void useAbility(int choice, Player player) {
+        abilities.get(choice).use(this, player);
+    }
+
+    boolean isAlive() {
+        return health > 0;
+    }
+}
+
+// ==========================================================
+// ABILITY CLASS
+// ==========================================================
+abstract class Ability {
+    String name;
+    int power;
+
+    Ability(String name, int power) {
+        this.name = name;
+        this.power = power;
+    }
+
+    abstract void use(Player player, Enemy enemy);
+    abstract void use(Enemy enemy, Player player);
+}
+
+// ==========================================================
+// ATTACK CLASS (INHERITS ABILITY)
+// ==========================================================
+class Attack extends Ability {
+    Attack(String name, int power) {
+        super(name, power);
+    }
+
+    void use(Player player, Enemy enemy) {
+        log(name + " deals " + power + " damage to the enemy.", color(255, 0, 0));
+        enemy.health -= power;
+    }
+
+    void use(Enemy enemy, Player player) {
+        log(name + " deals " + power + " damage to the player.", color(255, 0, 0));
+        player.health -= power;
+    }
+}
+
+// ==========================================================
+// DEFEND CLASS (INHERITS ABILITY)
+// ==========================================================
+class Defend extends Ability {
+    Defend(String name, int power) {
+        super(name, power);
+    }
+
+    void use(Player player, Enemy enemy) {
+        log(name + " increases defense by " + power + " points.", color(0, 255, 0));
+        player.blocking = true;
+        player.blockPower = power;
+    }
+
+    void use(Enemy enemy, Player player) {
+        log(name + " increases defense by " + power + " points.", color(0, 255, 0));
+        enemy.blocking = true;
+        enemy.blockPower = power;
+    }
+}
+
+// ==========================================================
+// PROGRESS TURN FUNCTION
+// ==========================================================
+void progressTurn() {
+    playerChoice = int(random(player.abilities.size()));
+    enemyChoice = int(random(enemy.abilities.size()));
+
+    // Player's turn
+    if (player.abilities.get(playerChoice) instanceof Attack && enemy.blocking) {
+        log("Enemy blocks the attack from " + playerName, color(0, 0, 255));
+    } else {
+        player.useAbility(playerChoice, enemy);
+    }
+
+    // Enemy's turn
+    if (enemy.abilities.get(enemyChoice) instanceof Attack) {
+        if (player.blocking) {
+            log("Player blocks the attack and reflects " + player.blockPower + " damage to the enemy.", color(255, 255, 0));
+            enemy.health -= player.blockPower;
+        } else {
+            enemy.useAbility(enemyChoice, player);
+        }
+    } else {
+        enemy.useAbility(enemyChoice, player);
+    }
+
+    // Log current health status
+    log(playerName + " HP: " + player.health + " | Enemy HP: " + enemy.health, color(255, 255, 255));
+
+    // Reset blocking status
+    player.blocking = false;
+    enemy.blocking = false;
+
+    // Check if the battle should end
+    if (!player.isAlive() || !enemy.isAlive()) {
+        endBattle();
+    }
+}
+
+//
