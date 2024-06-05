@@ -1,75 +1,74 @@
+//==========================================================
+// SETUP BATTLE FUNCTION
+// ==========================================================
+void setupBattle() {
+  enemy = new Combatant("Enemy", 100);
+  
+  enemy.addAbility(new Attack("Enemy Attack", 1,100));
+  player.addResistance(DamageType.FIRE, 2);
+  player.addResistance(DamageType.POISON, 1);
+  enemy.addResistance(DamageType.PHYSICAL, 5);
+  
+  startBattle();
+}
+
+
 // ==========================================================
 // STARTBATTLE FUNCTION
 // ==========================================================
 void startBattle() {
-    enemy = new Character("Enemy", 10); // Initialize enemy
+    ArrayList<String> events = new ArrayList<String>();
 
-    Ability basicAttack = new Attack("Basic Attack", 1, 100);
-    Ability block = new Block("Block", 1, 100);
-    Ability heal = new Heal("Heal", 2, 100);
+    // Initialize the battle log at the start
+    battleLog(player, enemy, events);
 
-    // Ensure player only adds these abilities once
-    if (player.abilities.size() == 0) {
-        player.addAbility(basicAttack);
-        player.addAbility(block);
-        player.addAbility(heal);
+   while (player.health > 0 && enemy.health > 0) {
+        // Progress a single turn
+        progressTurn(player, enemy, events);
+        delay(1000);
+     }
+
+    // Check for battle end
+    if (player.health <= 0) {
+        events.add("Player has been defeated!");
+    } else {
+        events.add("Enemy has been defeated!");
     }
 
-    enemy.addAbility(basicAttack);
-    enemy.addAbility(block);
-
-    log("Welcome, " + playerName + "! Get ready for battle.", color(255, 255, 255));
-    log("Press SPACE to progress through turns.", color(255, 255, 255));
+    // Display the final battle log
+    battleLog(player, enemy, events);
 }
+
 
 
 // ==========================================================
 // PROGRESSTURN FUNCTION
 // ==========================================================
-void progressTurn() {
-    playerChoice = int(random(player.abilities.size()));
-    enemyChoice = int(random(enemy.abilities.size()));
+void progressTurn(Combatant player, Combatant enemy, ArrayList<String> events) {
+    // Choose actions
+    Ability playerAction = player.chooseAction();
+    Ability enemyAction = enemy.chooseAction();
 
-    // Player's turn
-    if (player.abilities.get(playerChoice) instanceof Attack && enemy.blocking) {
-        log("Enemy blocks the attack from " + playerName, color(0, 0, 255));
-    } else {
-        player.useAbility(playerChoice, enemy);
-    }
+    // Get effects from actions
+    HashMap<String, Integer> playerEffects = playerAction.output();
+    HashMap<String, Integer> enemyEffects = enemyAction.output();
 
-    // Enemy's turn
-    if (enemy.abilities.get(enemyChoice) instanceof Attack) {
-        if (player.blocking) {
-            log("Player blocks the attack and reflects " + player.blockPower + " damage to the enemy.", color(255, 255, 0));
-            enemy.health -= player.blockPower;
-        } else {
-            enemy.useAbility(enemyChoice, player);
-        }
-    } else {
-        enemy.useAbility(enemyChoice, player);
-    }
+    // Process effects and add events to the log
+    processEffects(playerEffects, enemyEffects);
 
-    // Log current health status
-    log(playerName + " HP: " + player.health + " | Enemy HP: " + enemy.health, color(255, 255, 255));
+    // Add specific events
+    events.add("Player uses " + playerAction.name + " on Enemy.");
+    events.add("Enemy uses " + enemyAction.name + " on Player.");
 
-    // Reset blocking status
-    player.blocking = false;
-    enemy.blocking = false;
-
-    // Check if the battle should end
-    if (!player.isAlive() || !enemy.isAlive()) {
-        endBattle();
-    }
+    // Display the battle log after each turn
+    battleLog(player, enemy, events);
+    events.clear(); // Clear events for the next turn
 }
 
 //==========================================================
-// ENDBATTLE FUNCTION
+// PROCESS EFFECTS FUNCTION
 // ==========================================================
-void endBattle() {
-    if (player.isAlive()) {
-        log("Player wins! Press SPACE to reset.", color(0, 255, 0));
-    } else {
-        log("Enemy wins! Press SPACE to reset.", color(255, 0, 0));
-    }
-    gameEnded = true;
+void processEffects(HashMap<String, Integer> playerEffects, HashMap<String, Integer> enemyEffects) {
+  player.applyEffects(enemyEffects);
+  enemy.applyEffects(playerEffects);
 }

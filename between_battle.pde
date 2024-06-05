@@ -25,7 +25,7 @@ void applyReward(int choice) {
                 showWeightAdjustmentScreen(weightChange);
                 break;
             case 3:
-                player.addAbility(new LifeSacrifice("Life Sacrifice", 2, 100));
+                player.addAbility(new LifeSacrifice("Life Sacrifice", 1, 100));
                 log("You chose Life Sacrifice!", color(0, 255, 0));
                 rewardChosen = true;
                 showLoadoutScreen();
